@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tienda de Ropa</title>
+    <!-- Librería gratuita para leer tu Google Sheet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        /* Diseño básico de la tienda */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; }
+        header { background-color: #111; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        header h1 { margin: 0; font-size: 24px; }
+        .btn-carrito { background: #fff; color: #111; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        
+        /* Cuadrícula de productos */
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .tarjeta { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; transition: transform 0.2s; }
+        .tarjeta:hover { transform: translateY(-5px); }
+        .tarjeta img { width: 100%; height: 250px; object-fit: cover; border-radius: 8px; }
+        .tarjeta h3 { margin: 15px 0 5px 0; font-size: 18px; }
+        .tarjeta p { color: #25D366; font-size: 20px; font-weight: bold; margin: 0 0 15px 0; }
+        .btn-agregar { background: #111; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-agregar:hover { background: #333; }
+
+        /* Menú lateral del carrito */
+        #menu-carrito { position: fixed; top: 0; right: -350px; width: 300px; height: 100vh; background: white; box-shadow: -4px 0 15px rgba(0,0,0,0.1); transition: right 0.3s; padding: 20px; z-index: 200; overflow-y: auto; }
+        #menu-carrito.abierto { right: 0; }
+        .cerrar-carrito { background: none; border: none; font-size: 20px; cursor: pointer; float: right; }
+        .item-carrito { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 10px;}
+        .btn-whatsapp { background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .btn-whatsapp:hover { background: #1ebd5a; }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación superior -->
+    <header>
+        <h1>Mi Tienda</h1>
+        <button class="btn-carrito" onclick="toggleCarrito()">🛒 Mi Pedido (<span id="contador-carrito">0</span>)</button>
+    </header>
+
+    <!-- Catálogo de productos -->
+    <div class="container">
+        <h2>Catálogo de Temporada</h2>
+        <div id="catalogo" class="grid">
+            <p>Cargando colección desde Google Sheets...</p>
+        </div>
+    </div>
+
+    <!-- Menú lateral del Carrito -->
+    <div id="menu-carrito">
+        <button class="cerrar-carrito" onclick="toggleCarrito()">✖</button>
+        <h2>Tu Carrito</h2>
+        <div id="lista-carrito">
+            <p>El carrito está vacío.</p>
+        </div>
+        <h3 style="text-align: right; margin-top: 20px;">Total: $<span id="total-carrito">0</span></h3>
+        <button class="btn-whatsapp" onclick="enviarPedido()">📲 Hacer pedido por WhatsApp</button>
+    </div>
+
+    <script>
+        /* =========================================
+           CONFIGURACIÓN: CAMBIA ESTOS 2 DATOS
+        ========================================= */
+        const MI_WHATSAPP = "59176501678"; // Pon el código de tu país + tu número
+        const LINK_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSa5jmgJCICz26IzlgJpNNrE2dor9x-I4L6Fwix-ABtgA-CBO-b_l8hibhwMYLFpzx6fwIoYUMkmQQd/pub?gid=0&single=true&output=csv"; 
+        
+        let productos = [];
+        let carrito = [];
+
+        // 1. Leer los datos del Excel automáticamente
+        Papa.parse(LINK_GOOGLE_SHEETS, {
+            download: true,
+            header: true,
+            complete: function(resultados) {
+                // Filtramos por si hay filas vacías en tu excel
+                productos = resultados.data.filter(item => item.Nombre && item.Precio);
+                mostrarCatalogo();
+            }
+        });
+
+        // 2. Dibujar la ropa en la página
+        function mostrarCatalogo() {
+            const contenedor = document.getElementById("catalogo");
+            contenedor.innerHTML = ""; 
+
+            productos.forEach((producto, indice) => {
+                contenedor.innerHTML += `
+                    <div class="tarjeta">
+                        <img src="${producto.Imagen}" alt="${producto.Nombre}">
+                        <h3>${producto.Nombre}</h3>
+                        <p>$${producto.Precio}</p>
+                        <button class="btn-agregar" onclick="agregarAlCarrito(${indice})">Agregar al Carrito</button>
+                    </div>
+                `;
+            });
+        }
+
+        // 3. Funciones del carrito
+        function agregarAlCarrito(indice) {
+            carrito.push(productos[indice]);
+            actualizarCarrito();
+            toggleCarrito(true); // Abre el menú para mostrar que se agregó
+        }
+
+        function quitarDelCarrito(indiceEnCarrito) {
+            carrito.splice(indiceEnCarrito, 1);
+            actualizarCarrito();
+        }
+
+        function actualizarCarrito() {
+            const lista = document.getElementById("lista-carrito");
+            const contador = document.getElementById("contador-carrito");
+            const totalTexto = document.getElementById("total-carrito");
+            
+            lista.innerHTML = "";
+            let total = 0;
+
+            if (carrito.length === 0) {
+                lista.innerHTML = "<p>El carrito está vacío.</p>";
+            } else {
+                carrito.forEach((prod, i) => {
+                    total += parseFloat(prod.Precio);
+                    lista.innerHTML += `
+                        <div class="item-carrito">
+                            <span>${prod.Nombre}</span>
+                            <span>$${prod.Precio} <button onclick="quitarDelCarrito(${i})" style="color:red; border:none; background:none; cursor:pointer;">✖</button></span>
+                        </div>
+                    `;
+                });
+            }
+
+            contador.innerText = carrito.length;
+            totalTexto.innerText = total.toFixed(2);
+        }
+
+        function toggleCarrito(forzarAbrir = false) {
+            const menu = document.getElementById("menu-carrito");
+            if (forzarAbrir) {
+                menu.classList.add("abierto");
+            } else {
+                menu.classList.toggle("abierto");
+            }
+        }
+
+        // 4. Enviar a WhatsApp
+        function enviarPedido() {
+            if (carrito.length === 0) {
+                alert("Tu carrito está vacío, agrega prendas primero.");
+                return;
+            }
+
+            let mensaje = "¡Hola! Quisiera hacer el siguiente pedido de tu catálogo:%0A%0A";
+            let total = 0;
+
+            carrito.forEach(prod => {
+                mensaje += `- ${prod.Nombre} ($${prod.Precio})%0A`;
+                total += parseFloat(prod.Precio);
+            });
+
+            mensaje += `%0A*Total a pagar:* $${total.toFixed(2)}%0A%0A¡Muchas gracias!`;
+
+            // Abrir WhatsApp en una nueva pestaña
+            const url = `https://wa.me/${MI_WHATSAPP}?text=${mensaje}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
