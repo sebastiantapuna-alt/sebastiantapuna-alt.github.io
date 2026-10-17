@@ -1,171 +1,316 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Tienda de Ropa</title>
-    <!-- Librería gratuita para leer tu Google Sheet -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <style>
-        /* Diseño básico de la tienda */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; }
-        header { background-color: #111; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        header h1 { margin: 0; font-size: 24px; }
-        .btn-carrito { background: #fff; color: #111; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        
-        /* Cuadrícula de productos */
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .tarjeta { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; transition: transform 0.2s; }
-        .tarjeta:hover { transform: translateY(-5px); }
-        .tarjeta img { width: 100%; height: 250px; object-fit: cover; border-radius: 8px; }
-        .tarjeta h3 { margin: 15px 0 5px 0; font-size: 18px; }
-        .tarjeta p { color: #25D366; font-size: 20px; font-weight: bold; margin: 0 0 15px 0; }
-        .btn-agregar { background: #111; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        .btn-agregar:hover { background: #333; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Tienda de Ropa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root{--ink:#14342B;--ink2:#1F4A3D;--fondo:#F2F5F3;--blanco:#fff;--texto:#18201C;--suave:#66746D;--linea:#DDE4E0;--oro:#E8C547;--rojo:#C8372D;--wa:#25D366;--wa2:#1DB954}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'DM Sans','Segoe UI',Tahoma,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.5}
+h1,h2,h3{font-family:'Syne','Segoe UI',sans-serif;margin:0}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
 
-        /* Menú lateral del carrito */
-        #menu-carrito { position: fixed; top: 0; right: -350px; width: 300px; height: 100vh; background: white; box-shadow: -4px 0 15px rgba(0,0,0,0.1); transition: right 0.3s; padding: 20px; z-index: 200; overflow-y: auto; }
-        #menu-carrito.abierto { right: 0; }
-        .cerrar-carrito { background: none; border: none; font-size: 20px; cursor: pointer; float: right; }
-        .item-carrito { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 10px;}
-        .btn-whatsapp { background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-whatsapp:hover { background: #1ebd5a; }
-    </style>
+/* Cabecera */
+header{background:var(--ink);color:#fff;position:sticky;top:0;z-index:100}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
+header h1{font-size:22px;font-weight:800;letter-spacing:.5px}
+.btn-carrito{background:var(--oro);color:var(--ink);border:0;padding:10px 16px;border-radius:999px;font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center}
+.btn-carrito b{background:var(--ink);color:#fff;border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:13px;padding:0 6px}
+
+/* Portada */
+.hero{background:var(--ink);color:#fff;padding:56px 0 72px}
+.hero h2{font-size:clamp(44px,9vw,104px);font-weight:800;line-height:.95;letter-spacing:-2px}
+.hero p{max-width:460px;color:#C5D6CE;font-size:18px;margin:22px 0 28px}
+.btn-hero{display:inline-block;background:var(--oro);color:var(--ink);padding:14px 28px;border-radius:999px;font-weight:700;text-decoration:none}
+.btn-hero:hover{background:#f3d566}
+.beneficios{background:var(--ink2);color:#E4EEE9;font-size:14px}
+.beneficios .wrap{display:flex;flex-wrap:wrap;gap:8px 32px;padding-top:12px;padding-bottom:12px}
+
+/* Filtros */
+.barra{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:32px 0 24px}
+.barra h2{font-size:28px;font-weight:700}
+.buscar{flex:1;min-width:200px;max-width:320px;padding:11px 16px;border:1px solid var(--linea);border-radius:999px;font:inherit;background:#fff}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.chip{background:#fff;border:1px solid var(--linea);padding:8px 18px;border-radius:999px;font-size:14px;font-weight:500;color:var(--texto)}
+.chip:hover{border-color:var(--ink)}
+.chip.activo{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* Productos */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;padding-bottom:64px}
+.tarjeta{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--linea)}
+.foto{position:relative;aspect-ratio:4/5;background:#E3E8E4;overflow:hidden}
+.foto img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.tarjeta:hover .foto img{transform:scale(1.04)}
+.tag{position:absolute;top:12px;left:12px;background:var(--oro);color:var(--ink);font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+.tag.oferta{background:var(--rojo);color:#fff}
+.agotado .foto img{filter:grayscale(1);opacity:.55}
+.info{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.info h3{font-size:17px;font-weight:700}
+.precio{font-size:20px;font-weight:700;color:var(--ink)}
+.aviso{font-size:13px;color:var(--rojo);font-weight:500}
+.tallas{display:flex;gap:6px;flex-wrap:wrap}
+.talla{min-width:38px;height:34px;border:1px solid var(--linea);background:#fff;border-radius:8px;font-size:13px;font-weight:500;padding:0 8px}
+.talla:hover{border-color:var(--ink)}
+.talla.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-agregar{margin-top:auto;background:var(--ink);color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px;font-weight:700}
+.btn-agregar:hover{background:var(--ink2)}
+.btn-agregar:disabled{background:#C9D1CD;cursor:not-allowed}
+.vacio{grid-column:1/-1;text-align:center;color:var(--suave);padding:48px 0}
+.demo-nota{background:#FFF6D6;border:1px solid var(--oro);padding:10px 16px;border-radius:10px;font-size:14px;margin-bottom:20px}
+
+/* Carrito */
+#fondo{position:fixed;inset:0;background:rgba(10,20,16,.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:150}
+#fondo.abierto{opacity:1;pointer-events:auto}
+#menu-carrito{position:fixed;top:0;right:0;width:min(400px,100%);height:100%;background:#fff;transform:translateX(100%);transition:transform .3s;z-index:200;display:flex;flex-direction:column}
+#menu-carrito.abierto{transform:none}
+.carrito-cab{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--linea)}
+.carrito-cab h2{font-size:22px}
+.cerrar{background:none;border:0;font-size:22px;padding:4px 8px;color:var(--suave)}
+#lista-carrito{flex:1;overflow-y:auto;padding:8px 20px}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--linea);align-items:center}
+.item img{width:64px;height:80px;object-fit:cover;border-radius:8px;background:#E3E8E4}
+.item h4{margin:0;font-size:15px}
+.item small{color:var(--suave)}
+.cant{display:flex;align-items:center;gap:8px;margin-top:6px}
+.cant button{width:26px;height:26px;border-radius:50%;border:1px solid var(--linea);background:#fff;font-size:16px;line-height:1}
+.quitar{background:none;border:0;color:var(--rojo);font-size:13px;text-decoration:underline}
+.carrito-pie{padding:18px 20px;border-top:1px solid var(--linea)}
+.total{display:flex;justify-content:space-between;font-size:20px;font-weight:700;margin-bottom:14px}
+.btn-whatsapp{background:var(--wa);color:#fff;border:0;padding:15px;width:100%;border-radius:10px;font-size:16px;font-weight:700}
+.btn-whatsapp:hover{background:var(--wa2)}
+.vaciar{display:block;margin:12px auto 0;background:none;border:0;color:var(--suave);font-size:13px;text-decoration:underline}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;z-index:300;transition:transform .3s}
+#toast.ver{transform:translate(-50%,0)}
+
+footer{background:var(--ink);color:#C5D6CE;text-align:center;padding:28px 20px;font-size:14px}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}.info{padding:12px}.info h3{font-size:15px}.hero{padding:40px 0 52px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
 
-    <!-- Barra de navegación superior -->
-    <header>
-        <h1>Mi Tienda</h1>
-        <button class="btn-carrito" onclick="toggleCarrito()">🛒 Mi Pedido (<span id="contador-carrito">0</span>)</button>
-    </header>
+<header>
+  <div class="wrap">
+    <h1 id="nombre-tienda">Mi Tienda</h1>
+    <button class="btn-carrito" onclick="toggleCarrito()" aria-label="Abrir pedido">🛒 Mi pedido <b id="contador-carrito">0</b></button>
+  </div>
+</header>
 
-    <!-- Catálogo de productos -->
-    <div class="container">
-        <h2>Catálogo de Temporada</h2>
-        <div id="catalogo" class="grid">
-            <p>Cargando colección desde Google Sheets...</p>
+<section class="hero">
+  <div class="wrap">
+    <h2>Ropa para<br>cada día.</h2>
+    <p>Elige tu talla, arma tu pedido y envíalo directo por WhatsApp. Te respondemos rápido.</p>
+    <a class="btn-hero" href="#catalogo">Ver colección</a>
+  </div>
+</section>
+<div class="beneficios"><div class="wrap"><span>📲 Pedido por WhatsApp</span><span>🚚 Envíos a todo el país</span><span>🔄 Cambios por talla</span></div></div>
+
+<main class="wrap" id="catalogo">
+  <div class="barra">
+    <h2>Catálogo de temporada</h2>
+    <input class="buscar" id="busqueda" type="search" placeholder="Buscar prenda..." aria-label="Buscar prenda">
+  </div>
+  <div class="chips" id="chips"></div>
+  <div id="aviso-demo"></div>
+  <div id="grid" class="grid"><p class="vacio">Cargando colección...</p></div>
+</main>
+
+<footer>© <span id="anio"></span> <span id="pie-nombre">Mi Tienda</span>. Todos los derechos reservados.</footer>
+
+<div id="fondo" onclick="toggleCarrito(false)"></div>
+<aside id="menu-carrito" aria-label="Carrito">
+  <div class="carrito-cab"><h2>Tu pedido</h2><button class="cerrar" onclick="toggleCarrito(false)" aria-label="Cerrar">✕</button></div>
+  <div id="lista-carrito"></div>
+  <div class="carrito-pie">
+    <div class="total"><span>Total</span><span id="total-carrito">0</span></div>
+    <button class="btn-whatsapp" onclick="enviarPedido()">📲 Enviar pedido por WhatsApp</button>
+    <button class="vaciar" onclick="vaciarCarrito()">Vaciar pedido</button>
+  </div>
+</aside>
+<div id="toast" role="status"></div>
+
+<script>
+/* =========================================
+   CONFIGURACIÓN
+   Columnas del Google Sheet:
+   Nombre | Precio | Imagen | Categoria | Tallas | Stock | Etiqueta
+   (solo Nombre y Precio son obligatorias)
+   Tallas separadas con /  → S/M/L     Etiqueta: Nuevo u Oferta
+========================================= */
+const NOMBRE_TIENDA = "Mi Tienda";
+const MI_WHATSAPP = "59176501678";
+const MONEDA = "Bs";
+const LINK_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQro7972r9OYsTLGwuud0PUNYeWpkiBl8o1UKXYpf9659VWq2EMaCqfyy1ZKreg4AFhkyNIfikmdT0h/pub?gid=406708096&single=true&output=csv";
+
+/* Catálogo de ejemplo: se muestra solo si el Sheet no carga o está vacío */
+const u = id => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=70`;
+const DEMO = [
+  {Nombre:"Polera Básica Blanca",Precio:"89",Imagen:u("1521572163474-6864f9cf17ab"),Categoria:"Poleras",Tallas:"S/M/L/XL",Stock:"12",Etiqueta:"Nuevo"},
+  {Nombre:"Jean Recto Azul",Precio:"249",Imagen:u("1542272604-787c3835535d"),Categoria:"Pantalones",Tallas:"28/30/32/34",Stock:"6",Etiqueta:""},
+  {Nombre:"Casaca Cuero Sintético",Precio:"459",Imagen:u("1551028719-00167b16eac5"),Categoria:"Casacas",Tallas:"M/L/XL",Stock:"2",Etiqueta:"Nuevo"},
+  {Nombre:"Vestido Floral Verano",Precio:"279",Imagen:u("1595777457583-95e059d581b8"),Categoria:"Vestidos",Tallas:"S/M/L",Stock:"7",Etiqueta:"Oferta"},
+  {Nombre:"Camisa de Lino Celeste",Precio:"199",Imagen:u("1576566588028-4147f3842f27"),Categoria:"Camisas",Tallas:"S/M/L/XL",Stock:"0",Etiqueta:""},
+  {Nombre:"Gorra Clásica",Precio:"69",Imagen:u("1588850561407-ed78c282e89b"),Categoria:"Accesorios",Tallas:"Única",Stock:"15",Etiqueta:""}
+];
+
+const FOTO_VACIA = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500"><rect width="400" height="500" fill="#E3E8E4"/><text x="200" y="258" font-size="22" text-anchor="middle" fill="#7A8A82" font-family="sans-serif">Foto próximamente</text></svg>');
+
+let productos = [], carrito = [], categoria = "Todo", seleccion = {};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const num = v => parseFloat(String(v).replace(",", ".")) || 0;
+const dinero = v => `${MONEDA} ${v % 1 ? v.toFixed(2) : v}`;
+
+$("nombre-tienda").textContent = $("pie-nombre").textContent = NOMBRE_TIENDA;
+$("anio").textContent = new Date().getFullYear();
+document.title = NOMBRE_TIENDA + " | Ropa";
+
+try { carrito = JSON.parse(localStorage.getItem("carrito") || "[]"); } catch (e) { carrito = []; }
+
+/* 1. Leer el Google Sheet */
+Papa.parse(LINK_GOOGLE_SHEETS, {
+  download: true, header: true, skipEmptyLines: true,
+  transformHeader: h => h.trim(),
+  complete: r => iniciar(r.data.filter(p => p.Nombre && p.Precio)),
+  error: () => iniciar([])
+});
+
+function iniciar(datos) {
+  if (!datos.length) {
+    datos = DEMO;
+    $("aviso-demo").innerHTML = '<div class="demo-nota">Mostrando catálogo de ejemplo. Publica tu Google Sheet como CSV y agrega productos para ver los tuyos aquí.</div>';
+  }
+  productos = datos;
+  dibujarChips();
+  mostrarCatalogo();
+  actualizarCarrito();
+}
+
+/* 2. Categorías y catálogo */
+function dibujarChips() {
+  const cats = ["Todo", ...new Set(productos.map(p => (p.Categoria || "").trim()).filter(Boolean))];
+  $("chips").innerHTML = cats.length > 2 ? cats.map(c =>
+    `<button class="chip ${c === categoria ? "activo" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") : "";
+}
+
+function mostrarCatalogo() {
+  const q = norm($("busqueda").value);
+  const html = productos.map((p, i) => ({p, i}))
+    .filter(({p}) => (categoria === "Todo" || (p.Categoria || "").trim() === categoria) && norm(p.Nombre).includes(q))
+    .map(({p, i}) => {
+      const stock = (p.Stock ?? "").trim() === "" ? null : num(p.Stock);
+      const agotado = stock !== null && stock <= 0;
+      const tallas = (p.Tallas || "").split("/").map(t => t.trim()).filter(Boolean);
+      const etiqueta = (p.Etiqueta || "").trim();
+      return `
+      <article class="tarjeta ${agotado ? "agotado" : ""}">
+        <div class="foto">
+          <img loading="lazy" src="${esc(p.Imagen || FOTO_VACIA)}" alt="${esc(p.Nombre)}" onerror="this.onerror=null;this.src=FOTO_VACIA">
+          ${agotado ? '<span class="tag">Agotado</span>' : etiqueta ? `<span class="tag ${norm(etiqueta) === "oferta" ? "oferta" : ""}">${esc(etiqueta)}</span>` : ""}
         </div>
-    </div>
-
-    <!-- Menú lateral del Carrito -->
-    <div id="menu-carrito">
-        <button class="cerrar-carrito" onclick="toggleCarrito()">✖</button>
-        <h2>Tu Carrito</h2>
-        <div id="lista-carrito">
-            <p>El carrito está vacío.</p>
+        <div class="info">
+          <h3>${esc(p.Nombre)}</h3>
+          <div class="precio">${dinero(num(p.Precio))}</div>
+          ${stock !== null && stock > 0 && stock <= 3 ? `<div class="aviso">Quedan solo ${stock}</div>` : ""}
+          ${tallas.length ? `<div class="tallas" role="group" aria-label="Talla">${tallas.map(t => `<button class="talla ${seleccion[i] === t ? "sel" : ""}" data-i="${i}" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>` : ""}
+          <button class="btn-agregar" data-add="${i}" ${agotado ? "disabled" : ""}>${agotado ? "Agotado" : "Agregar al pedido"}</button>
         </div>
-        <h3 style="text-align: right; margin-top: 20px;">Total: $<span id="total-carrito">0</span></h3>
-        <button class="btn-whatsapp" onclick="enviarPedido()">📲 Hacer pedido por WhatsApp</button>
-    </div>
+      </article>`;
+    }).join("");
+  $("grid").innerHTML = html || '<p class="vacio">No encontramos prendas con esa búsqueda. Prueba con otra palabra o categoría.</p>';
+}
 
-    <script>
-        /* =========================================
-           CONFIGURACIÓN: CAMBIA ESTOS 2 DATOS
-        ========================================= */
-        const MI_WHATSAPP = "59176501678"; // Pon el código de tu país + tu número
-        const LINK_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSa5jmgJCICz26IzlgJpNNrE2dor9x-I4L6Fwix-ABtgA-CBO-b_l8hibhwMYLFpzx6fwIoYUMkmQQd/pub?gid=0&single=true&output=csv"; 
-        
-        let productos = [];
-        let carrito = [];
+$("busqueda").addEventListener("input", mostrarCatalogo);
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  categoria = b.dataset.cat; dibujarChips(); mostrarCatalogo();
+});
+$("grid").addEventListener("click", e => {
+  const t = e.target.closest(".talla");
+  if (t) {
+    seleccion[t.dataset.i] = t.dataset.t;
+    t.parentElement.querySelectorAll(".talla").forEach(b => b.classList.toggle("sel", b === t));
+    return;
+  }
+  const a = e.target.closest("[data-add]");
+  if (a) agregarAlCarrito(+a.dataset.add);
+});
 
-        // 1. Leer los datos del Excel automáticamente
-        Papa.parse(LINK_GOOGLE_SHEETS, {
-            download: true,
-            header: true,
-            complete: function(resultados) {
-                // Filtramos por si hay filas vacías en tu excel
-                productos = resultados.data.filter(item => item.Nombre && item.Precio);
-                mostrarCatalogo();
-            }
-        });
+/* 3. Carrito */
+function agregarAlCarrito(i) {
+  const p = productos[i];
+  const tallas = (p.Tallas || "").split("/").map(t => t.trim()).filter(Boolean);
+  if (tallas.length && !seleccion[i]) { aviso("Elige una talla para " + p.Nombre); return; }
+  const talla = seleccion[i] || "";
+  const existente = carrito.find(c => c.nombre === p.Nombre && c.talla === talla);
+  if (existente) existente.cant++;
+  else carrito.push({nombre: p.Nombre, precio: num(p.Precio), talla, img: p.Imagen || "", cant: 1});
+  actualizarCarrito();
+  aviso("Agregado al pedido ✓");
+}
 
-        // 2. Dibujar la ropa en la página
-        function mostrarCatalogo() {
-            const contenedor = document.getElementById("catalogo");
-            contenedor.innerHTML = ""; 
+function cambiarCantidad(i, d) {
+  carrito[i].cant += d;
+  if (carrito[i].cant <= 0) carrito.splice(i, 1);
+  actualizarCarrito();
+}
+function quitarDelCarrito(i) { carrito.splice(i, 1); actualizarCarrito(); }
+function vaciarCarrito() { carrito = []; actualizarCarrito(); }
 
-            productos.forEach((producto, indice) => {
-                contenedor.innerHTML += `
-                    <div class="tarjeta">
-                        <img src="${producto.Imagen}" alt="${producto.Nombre}">
-                        <h3>${producto.Nombre}</h3>
-                        <p>$${producto.Precio}</p>
-                        <button class="btn-agregar" onclick="agregarAlCarrito(${indice})">Agregar al Carrito</button>
-                    </div>
-                `;
-            });
-        }
+function actualizarCarrito() {
+  const lista = $("lista-carrito");
+  let total = 0, unidades = 0;
+  lista.innerHTML = carrito.length ? carrito.map((c, i) => {
+    total += c.precio * c.cant; unidades += c.cant;
+    return `<div class="item">
+      <img src="${esc(c.img || FOTO_VACIA)}" alt="" onerror="this.onerror=null;this.src=FOTO_VACIA">
+      <div>
+        <h4>${esc(c.nombre)}</h4>
+        <small>${c.talla ? "Talla " + esc(c.talla) + " · " : ""}${dinero(c.precio)}</small>
+        <div class="cant"><button onclick="cambiarCantidad(${i},-1)" aria-label="Menos">−</button><span>${c.cant}</span><button onclick="cambiarCantidad(${i},1)" aria-label="Más">+</button></div>
+      </div>
+      <div style="text-align:right"><strong>${dinero(c.precio * c.cant)}</strong><br><button class="quitar" onclick="quitarDelCarrito(${i})">Quitar</button></div>
+    </div>`;
+  }).join("") : '<p class="vacio" style="padding:40px 0">Tu pedido está vacío. Agrega una prenda del catálogo.</p>';
+  $("contador-carrito").textContent = unidades;
+  $("total-carrito").textContent = dinero(total);
+  try { localStorage.setItem("carrito", JSON.stringify(carrito)); } catch (e) {}
+}
 
-        // 3. Funciones del carrito
-        function agregarAlCarrito(indice) {
-            carrito.push(productos[indice]);
-            actualizarCarrito();
-            toggleCarrito(true); // Abre el menú para mostrar que se agregó
-        }
+function toggleCarrito(abrir) {
+  const abierto = typeof abrir === "boolean" ? abrir : !$("menu-carrito").classList.contains("abierto");
+  $("menu-carrito").classList.toggle("abierto", abierto);
+  $("fondo").classList.toggle("abierto", abierto);
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") toggleCarrito(false); });
 
-        function quitarDelCarrito(indiceEnCarrito) {
-            carrito.splice(indiceEnCarrito, 1);
-            actualizarCarrito();
-        }
+let tTimer;
+function aviso(txt) {
+  const t = $("toast"); t.textContent = txt; t.classList.add("ver");
+  clearTimeout(tTimer); tTimer = setTimeout(() => t.classList.remove("ver"), 2200);
+}
 
-        function actualizarCarrito() {
-            const lista = document.getElementById("lista-carrito");
-            const contador = document.getElementById("contador-carrito");
-            const totalTexto = document.getElementById("total-carrito");
-            
-            lista.innerHTML = "";
-            let total = 0;
-
-            if (carrito.length === 0) {
-                lista.innerHTML = "<p>El carrito está vacío.</p>";
-            } else {
-                carrito.forEach((prod, i) => {
-                    total += parseFloat(prod.Precio);
-                    lista.innerHTML += `
-                        <div class="item-carrito">
-                            <span>${prod.Nombre}</span>
-                            <span>$${prod.Precio} <button onclick="quitarDelCarrito(${i})" style="color:red; border:none; background:none; cursor:pointer;">✖</button></span>
-                        </div>
-                    `;
-                });
-            }
-
-            contador.innerText = carrito.length;
-            totalTexto.innerText = total.toFixed(2);
-        }
-
-        function toggleCarrito(forzarAbrir = false) {
-            const menu = document.getElementById("menu-carrito");
-            if (forzarAbrir) {
-                menu.classList.add("abierto");
-            } else {
-                menu.classList.toggle("abierto");
-            }
-        }
-
-        // 4. Enviar a WhatsApp
-        function enviarPedido() {
-            if (carrito.length === 0) {
-                alert("Tu carrito está vacío, agrega prendas primero.");
-                return;
-            }
-
-            let mensaje = "¡Hola! Quisiera hacer el siguiente pedido de tu catálogo:%0A%0A";
-            let total = 0;
-
-            carrito.forEach(prod => {
-                mensaje += `- ${prod.Nombre} ($${prod.Precio})%0A`;
-                total += parseFloat(prod.Precio);
-            });
-
-            mensaje += `%0A*Total a pagar:* $${total.toFixed(2)}%0A%0A¡Muchas gracias!`;
-
-            // Abrir WhatsApp en una nueva pestaña
-            const url = `https://wa.me/${MI_WHATSAPP}?text=${mensaje}`;
-            window.open(url, '_blank');
-        }
-    </script>
+/* 4. Enviar a WhatsApp */
+function enviarPedido() {
+  if (!carrito.length) { aviso("Tu pedido está vacío"); return; }
+  let total = 0;
+  let msg = `¡Hola ${NOMBRE_TIENDA}! Quisiera hacer este pedido:\n\n`;
+  carrito.forEach(c => {
+    total += c.precio * c.cant;
+    msg += `• ${c.cant} x ${c.nombre}${c.talla ? " (Talla " + c.talla + ")" : ""} - ${dinero(c.precio * c.cant)}\n`;
+  });
+  msg += `\n*Total: ${dinero(total)}*\n\n¿Me confirman disponibilidad y forma de entrega? ¡Gracias!`;
+  window.open(`https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+</script>
 </body>
 </html>
