@@ -9,59 +9,75 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
-:root{--ink:#14342B;--ink2:#1F4A3D;--fondo:#F2F5F3;--blanco:#fff;--texto:#18201C;--suave:#66746D;--linea:#DDE4E0;--oro:#E8C547;--rojo:#C8372D;--wa:#25D366;--wa2:#1DB954}
+:root{--ink:#183b32;--ink2:#254c40;--fondo:#f7f6f1;--blanco:#fff;--texto:#202823;--suave:#6d766f;--linea:#e6e5de;--oro:#e8c547;--rojo:#b9463b;--wa:#25D366;--wa2:#1DB954;--arena:#e9e4d7}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font-family:'DM Sans','Segoe UI',Tahoma,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.5}
+body{margin:0;font-family:'DM Sans','Segoe UI',Tahoma,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.55}
 h1,h2,h3{font-family:'Syne','Segoe UI',sans-serif;margin:0}
 button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--oro);outline-offset:2px}
 .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
 
 /* Cabecera */
-header{background:var(--ink);color:#fff;position:sticky;top:0;z-index:100}
-header .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
-header h1{font-size:22px;font-weight:800;letter-spacing:.5px}
-.btn-carrito{background:var(--oro);color:var(--ink);border:0;padding:10px 16px;border-radius:999px;font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center}
+header{background:rgba(24,59,50,.97);color:#fff;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);box-shadow:0 5px 24px #0d241b20}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:72px}
+header h1{font-size:21px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.btn-carrito{background:var(--oro);color:var(--ink);border:0;padding:10px 17px;border-radius:999px;font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;transition:transform .2s,background .2s}
+.btn-carrito:hover{transform:translateY(-2px);background:#f1d35c}
 .btn-carrito b{background:var(--ink);color:#fff;border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:13px;padding:0 6px}
 
 /* Portada */
-.hero{background:var(--ink);color:#fff;padding:56px 0 72px}
-.hero h2{font-size:clamp(44px,9vw,104px);font-weight:800;line-height:.95;letter-spacing:-2px}
-.hero p{max-width:460px;color:#C5D6CE;font-size:18px;margin:22px 0 28px}
-.btn-hero{display:inline-block;background:var(--oro);color:var(--ink);padding:14px 28px;border-radius:999px;font-weight:700;text-decoration:none}
-.btn-hero:hover{background:#f3d566}
-.beneficios{background:var(--ink2);color:#E4EEE9;font-size:14px}
-.beneficios .wrap{display:flex;flex-wrap:wrap;gap:8px 32px;padding-top:12px;padding-bottom:12px}
+.hero{background:var(--ink);color:#fff;padding:54px 0 62px;overflow:hidden;position:relative}
+.hero:before{content:"";position:absolute;width:580px;height:580px;border:1px solid #ffffff18;border-radius:50%;right:-130px;top:-250px;box-shadow:0 0 0 42px #ffffff08,0 0 0 90px #ffffff06;pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:1fr .9fr;align-items:center;gap:48px;position:relative}
+.hero-copy{padding:10px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#e8d995;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700;margin-bottom:22px}
+.eyebrow:before{content:"";width:24px;height:1px;background:var(--oro)}
+.hero h2{font-size:clamp(48px,7vw,86px);font-weight:800;line-height:.98;letter-spacing:-3px;max-width:600px}
+.hero h2 em{font-style:normal;color:var(--oro)}
+.hero p{max-width:410px;color:#d2ded8;font-size:17px;margin:22px 0 28px}
+.btn-hero{display:inline-flex;align-items:center;gap:12px;background:var(--oro);color:var(--ink);padding:14px 23px;border-radius:999px;font-weight:700;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.btn-hero:after{content:"→";font-size:18px}
+.btn-hero:hover{transform:translateY(-2px);box-shadow:0 9px 22px #0003;background:#f3d566}
+.hero-visual{height:380px;position:relative;border-radius:48% 48% 14px 14px;overflow:hidden;background:#a6a99e;box-shadow:0 22px 55px #091c153d}
+.hero-visual img{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;filter:saturate(.78)}
+.hero-visual:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,#10251d77)}
+.hero-stamp{position:absolute;z-index:1;bottom:20px;left:20px;border:1px solid #ffffff8c;border-radius:999px;padding:9px 14px;color:#fff;font-size:12px;letter-spacing:.5px;background:#173a3066;backdrop-filter:blur(8px)}
+.beneficios{background:#eeeae0;color:var(--ink);font-size:13px}
+.beneficios .wrap{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 48px;padding-top:15px;padding-bottom:15px}
+.beneficios span{display:flex;align-items:center;gap:9px}
 
 /* Filtros */
-.barra{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:32px 0 24px}
-.barra h2{font-size:28px;font-weight:700}
-.buscar{flex:1;min-width:200px;max-width:320px;padding:11px 16px;border:1px solid var(--linea);border-radius:999px;font:inherit;background:#fff}
+.barra{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between;margin:52px 0 24px}
+.barra h2{font-size:clamp(25px,3vw,34px);font-weight:700;letter-spacing:-.8px}
+.barra h2 small{display:block;color:var(--suave);font:500 13px 'DM Sans',sans-serif;letter-spacing:0;margin-bottom:5px}
+.buscar{flex:1;min-width:200px;max-width:320px;padding:12px 17px;border:1px solid var(--linea);border-radius:999px;font:inherit;background:#fff;box-shadow:0 3px 12px #17261d08;transition:border .2s,box-shadow .2s}
+.buscar:focus{border-color:var(--ink2);box-shadow:0 0 0 4px #254c4014;outline:0}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.chip{background:#fff;border:1px solid var(--linea);padding:8px 18px;border-radius:999px;font-size:14px;font-weight:500;color:var(--texto)}
-.chip:hover{border-color:var(--ink)}
+.chip{background:#fff;border:1px solid var(--linea);padding:8px 18px;border-radius:999px;font-size:13px;font-weight:600;color:var(--texto);transition:all .18s}
+.chip:hover{border-color:var(--ink);transform:translateY(-1px)}
 .chip.activo{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* Productos */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;padding-bottom:64px}
-.tarjeta{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--linea)}
-.foto{position:relative;aspect-ratio:4/5;background:#E3E8E4;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:22px;padding-bottom:76px}
+.tarjeta{background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;border:1px solid #eae9e3;box-shadow:0 5px 18px #17261d08;transition:transform .25s,box-shadow .25s}
+.tarjeta:hover{transform:translateY(-5px);box-shadow:0 16px 34px #17261d15}
+.foto{position:relative;aspect-ratio:4/5;background:var(--arena);overflow:hidden}
 .foto img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
 .tarjeta:hover .foto img{transform:scale(1.04)}
-.tag{position:absolute;top:12px;left:12px;background:var(--oro);color:var(--ink);font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+.tag{position:absolute;top:13px;left:13px;background:#f4e8b4;color:var(--ink);font-size:11px;font-weight:700;padding:6px 11px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
 .tag.oferta{background:var(--rojo);color:#fff}
 .agotado .foto img{filter:grayscale(1);opacity:.55}
-.info{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.info{padding:17px;display:flex;flex-direction:column;gap:8px;flex:1}
 .info h3{font-size:17px;font-weight:700}
-.precio{font-size:20px;font-weight:700;color:var(--ink)}
+.precio{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.3px}
 .aviso{font-size:13px;color:var(--rojo);font-weight:500}
 .tallas{display:flex;gap:6px;flex-wrap:wrap}
 .talla{min-width:38px;height:34px;border:1px solid var(--linea);background:#fff;border-radius:8px;font-size:13px;font-weight:500;padding:0 8px}
 .talla:hover{border-color:var(--ink)}
 .talla.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
-.btn-agregar{margin-top:auto;background:var(--ink);color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px;font-weight:700}
-.btn-agregar:hover{background:var(--ink2)}
+.btn-agregar{margin-top:auto;background:var(--ink);color:#fff;border:0;padding:12px;border-radius:10px;font-size:14px;font-weight:700;transition:background .18s,transform .18s}
+.btn-agregar:hover{background:var(--ink2);transform:translateY(-1px)}
 .btn-agregar:disabled{background:#C9D1CD;cursor:not-allowed}
 .vacio{grid-column:1/-1;text-align:center;color:var(--suave);padding:48px 0}
 .demo-nota{background:#FFF6D6;border:1px solid var(--oro);padding:10px 16px;border-radius:10px;font-size:14px;margin-bottom:20px}
@@ -90,8 +106,9 @@ header h1{font-size:22px;font-weight:800;letter-spacing:.5px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;z-index:300;transition:transform .3s}
 #toast.ver{transform:translate(-50%,0)}
 
-footer{background:var(--ink);color:#C5D6CE;text-align:center;padding:28px 20px;font-size:14px}
-@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}.info{padding:12px}.info h3{font-size:15px}.hero{padding:40px 0 52px}}
+footer{background:var(--ink);color:#C5D6CE;text-align:center;padding:30px 20px;font-size:13px;letter-spacing:.2px}
+@media(max-width:760px){.hero .wrap{grid-template-columns:1fr .72fr;gap:22px}.hero-visual{height:310px}.hero h2{font-size:clamp(44px,8vw,68px)}}
+@media(max-width:560px){header .wrap{height:64px}.hero{padding:36px 0 42px}.hero .wrap{grid-template-columns:1fr;gap:26px}.hero-copy{padding:0}.hero h2{font-size:clamp(48px,13vw,68px);letter-spacing:-2px}.hero p{font-size:15px;margin:16px 0 22px}.hero-visual{height:260px;width:84%;margin:0 auto;border-radius:120px 120px 12px 12px}.beneficios .wrap{justify-content:flex-start;gap:9px 20px}.beneficios span{font-size:12px}.barra{margin:36px 0 20px;align-items:stretch}.barra h2{width:100%}.buscar{max-width:none;width:100%}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info{padding:11px}.info h3{font-size:14px;line-height:1.3}.precio{font-size:17px}.talla{min-width:32px;padding:0 6px}.btn-agregar{font-size:12px;padding:11px 6px}.tag{top:8px;left:8px;font-size:9px;padding:5px 8px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -106,16 +123,23 @@ footer{background:var(--ink);color:#C5D6CE;text-align:center;padding:28px 20px;f
 
 <section class="hero">
   <div class="wrap">
-    <h2>Ropa para<br>cada día.</h2>
-    <p>Elige tu talla, arma tu pedido y envíalo directo por WhatsApp. Te respondemos rápido.</p>
-    <a class="btn-hero" href="#catalogo">Ver colección</a>
+    <div class="hero-copy">
+      <div class="eyebrow">Tu estilo, todos los días</div>
+      <h2>Viste como<br><em>te sientes.</em></h2>
+      <p>Prendas que combinan contigo. Encuentra tu próxima favorita y pídela fácilmente por WhatsApp.</p>
+      <a class="btn-hero" href="#catalogo">Descubrir colección</a>
+    </div>
+    <div class="hero-visual" aria-label="Inspiración de moda" role="img">
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1100&q=85" alt="Amigas disfrutando de una tarde de compras" fetchpriority="high">
+      <span class="hero-stamp">PIEZAS PARA SENTIRTE TÚ</span>
+    </div>
   </div>
 </section>
-<div class="beneficios"><div class="wrap"><span>📲 Pedido por WhatsApp</span><span>🚚 Envíos a todo el país</span><span>🔄 Cambios por talla</span></div></div>
+<div class="beneficios"><div class="wrap"><span>✳ Pedido fácil por WhatsApp</span><span>✳ Envíos a todo el país</span><span>✳ Cambios por talla</span></div></div>
 
 <main class="wrap" id="catalogo">
   <div class="barra">
-    <h2>Catálogo de temporada</h2>
+    <h2><small>Encuentra tu próximo look</small>Catálogo de temporada</h2>
     <input class="buscar" id="busqueda" type="search" placeholder="Buscar prenda..." aria-label="Buscar prenda">
   </div>
   <div class="chips" id="chips"></div>
