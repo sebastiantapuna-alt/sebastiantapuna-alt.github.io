@@ -65,7 +65,7 @@ header h1{font-size:21px;font-weight:800;letter-spacing:.7px;text-transform:uppe
 .foto{position:relative;aspect-ratio:4/5;background:var(--arena);overflow:hidden}
 .foto img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
 .tarjeta:hover .foto img{transform:scale(1.04)}
-.tag{position:absolute;top:13px;left:13px;background:#f4e8b4;color:var(--ink);font-size:11px;font-weight:700;padding:6px 11px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
+.tag{position:absolute;z-index:2;top:13px;left:13px;background:#f4e8b4;color:var(--ink);font-size:11px;font-weight:700;padding:6px 11px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px;pointer-events:none}
 .tag.oferta{background:var(--rojo);color:#fff}
 .agotado .foto img{filter:grayscale(1);opacity:.55}
 .info{padding:17px;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -79,6 +79,10 @@ header h1{font-size:21px;font-weight:800;letter-spacing:.7px;text-transform:uppe
 .btn-agregar{margin-top:auto;background:var(--ink);color:#fff;border:0;padding:12px;border-radius:10px;font-size:14px;font-weight:700;transition:background .18s,transform .18s}
 .btn-agregar:hover{background:var(--ink2);transform:translateY(-1px)}
 .btn-agregar:disabled{background:#C9D1CD;cursor:not-allowed}
+.btn-agregar{width:100%;border-radius:999px;padding:13px;font-size:14px;letter-spacing:.15px;box-shadow:0 5px 12px #183b321c}
+.foto{cursor:pointer}
+.foto:after{content:"Ver detalles";position:absolute;right:12px;bottom:12px;color:#fff;background:#183b32c9;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:700;opacity:0;transform:translateY(4px);transition:.2s;z-index:1}
+.foto:hover:after,.foto:focus-within:after{opacity:1;transform:none}
 .vacio{grid-column:1/-1;text-align:center;color:var(--suave);padding:48px 0}
 .demo-nota{background:#FFF6D6;border:1px solid var(--oro);padding:10px 16px;border-radius:10px;font-size:14px;margin-bottom:20px}
 
@@ -101,13 +105,45 @@ header h1{font-size:21px;font-weight:800;letter-spacing:.7px;text-transform:uppe
 .carrito-pie{padding:18px 20px;border-top:1px solid var(--linea)}
 .total{display:flex;justify-content:space-between;font-size:20px;font-weight:700;margin-bottom:14px}
 .btn-whatsapp{background:var(--wa);color:#fff;border:0;padding:15px;width:100%;border-radius:10px;font-size:16px;font-weight:700}
-.btn-whatsapp:hover{background:var(--wa2)}
+.btn-whatsapp{border-radius:999px;box-shadow:0 7px 18px #25d36638;transition:transform .2s,box-shadow .2s}
+.btn-whatsapp:hover{background:var(--wa2);transform:translateY(-1px);box-shadow:0 10px 22px #25d36648}
+.carrito-ayuda{text-align:center;color:var(--suave);font-size:12px;margin:10px 0 0}
 .vaciar{display:block;margin:12px auto 0;background:none;border:0;color:var(--suave);font-size:13px;text-decoration:underline}
+/* Ficha de producto */
+#fondo-detalle{position:fixed;inset:0;background:#0d1713b8;opacity:0;pointer-events:none;transition:opacity .25s;z-index:220;backdrop-filter:blur(4px)}
+#fondo-detalle.abierto{opacity:1;pointer-events:auto}
+#detalle-producto{position:fixed;z-index:230;left:50%;top:50%;width:min(920px,calc(100% - 32px));max-height:min(760px,calc(100dvh - 32px));overflow:auto;background:#fff;border-radius:22px;box-shadow:0 25px 90px #0005;opacity:0;pointer-events:none;transform:translate(-50%,-47%) scale(.98);transition:opacity .25s,transform .25s}
+#detalle-producto.abierto{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.detalle-cerrar{position:sticky;top:12px;float:right;z-index:3;margin:12px 12px -48px 0;width:38px;height:38px;border:0;border-radius:50%;background:#fff;color:var(--ink);font-size:19px;box-shadow:0 3px 14px #0002}
+.detalle-layout{display:grid;grid-template-columns:1.05fr .95fr;min-height:520px}
+.detalle-media{padding:20px;background:#f3f0e8;border-radius:22px 0 0 22px;display:flex;flex-direction:column;gap:12px}
+.detalle-principal{width:100%;flex:1;min-height:350px;max-height:520px;object-fit:cover;border-radius:14px;background:var(--arena)}
+.detalle-miniaturas{display:flex;gap:9px;overflow-x:auto;padding-bottom:2px}
+.detalle-miniaturas button{flex:0 0 62px;width:62px;height:76px;padding:0;border:2px solid transparent;border-radius:9px;overflow:hidden;background:#fff}
+.detalle-miniaturas button.activa{border-color:var(--ink)}
+.detalle-miniaturas img{width:100%;height:100%;object-fit:cover}
+.detalle-info{padding:48px 38px 34px;display:flex;flex-direction:column;align-items:flex-start}
+.detalle-categoria{text-transform:uppercase;letter-spacing:1.6px;font-size:11px;font-weight:700;color:var(--suave);margin-bottom:8px}
+.detalle-info h2{font-size:clamp(25px,3vw,34px);line-height:1.15;letter-spacing:-.7px}
+.detalle-precio{font-size:26px;font-weight:700;color:var(--ink);margin:12px 0}
+.detalle-descripcion{color:#59635d;font-size:14px;line-height:1.7;margin:0 0 24px}
+.detalle-info label,.detalle-etiqueta{display:block;font-size:13px;font-weight:700;margin:0 0 9px}
+.detalle-info .tallas{margin-bottom:22px}
+.detalle-info .talla{min-width:44px;height:40px;border-radius:999px}
+.detalle-cantidad{display:flex;align-items:center;gap:0;border:1px solid var(--linea);border-radius:999px;padding:4px;margin-bottom:22px}
+.detalle-cantidad button{width:34px;height:34px;border:0;border-radius:50%;background:#f4f4ef;color:var(--ink);font-size:18px}
+.detalle-cantidad output{width:42px;text-align:center;font-weight:700}
+.detalle-stock{color:var(--suave);font-size:12px;margin:-13px 0 16px}
+.detalle-agregar{margin-top:auto;width:100%;border:0;border-radius:999px;background:var(--ink);color:#fff;padding:15px 20px;font-size:15px;font-weight:700;box-shadow:0 8px 20px #183b3225;transition:.2s}
+.detalle-agregar:hover{background:var(--ink2);transform:translateY(-1px)}
+.detalle-agregar:disabled{background:#aab4ae;box-shadow:none;transform:none;cursor:not-allowed}
+.detalle-envio{font-size:11px;color:var(--suave);text-align:center;width:100%;margin:10px 0 0}
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;z-index:300;transition:transform .3s}
 #toast.ver{transform:translate(-50%,0)}
 
 footer{background:var(--ink);color:#C5D6CE;text-align:center;padding:30px 20px;font-size:13px;letter-spacing:.2px}
 @media(max-width:760px){.hero .wrap{grid-template-columns:1fr .72fr;gap:22px}.hero-visual{height:310px}.hero h2{font-size:clamp(44px,8vw,68px)}}
+@media(max-width:700px){#detalle-producto{width:min(520px,calc(100% - 20px));max-height:calc(100dvh - 20px);border-radius:18px}.detalle-layout{grid-template-columns:1fr}.detalle-media{padding:12px;border-radius:18px 18px 0 0;gap:8px}.detalle-principal{height:34vh;min-height:200px;max-height:320px}.detalle-miniaturas button{flex-basis:52px;width:52px;height:62px}.detalle-info{padding:22px 22px 24px}.detalle-info h2{font-size:26px}.detalle-precio{font-size:23px;margin:8px 0}.detalle-descripcion{margin-bottom:16px}.detalle-info .tallas{margin-bottom:16px}}
 @media(max-width:560px){header .wrap{height:64px}.hero{padding:36px 0 42px}.hero .wrap{grid-template-columns:1fr;gap:26px}.hero-copy{padding:0}.hero h2{font-size:clamp(48px,13vw,68px);letter-spacing:-2px}.hero p{font-size:15px;margin:16px 0 22px}.hero-visual{height:260px;width:84%;margin:0 auto;border-radius:120px 120px 12px 12px}.beneficios .wrap{justify-content:flex-start;gap:9px 20px}.beneficios span{font-size:12px}.barra{margin:36px 0 20px;align-items:stretch}.barra h2{width:100%}.buscar{max-width:none;width:100%}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info{padding:11px}.info h3{font-size:14px;line-height:1.3}.precio{font-size:17px}.talla{min-width:32px;padding:0 6px}.btn-agregar{font-size:12px;padding:11px 6px}.tag{top:8px;left:8px;font-size:9px;padding:5px 8px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -155,18 +191,24 @@ footer{background:var(--ink);color:#C5D6CE;text-align:center;padding:30px 20px;f
   <div id="lista-carrito"></div>
   <div class="carrito-pie">
     <div class="total"><span>Total</span><span id="total-carrito">0</span></div>
-    <button class="btn-whatsapp" onclick="enviarPedido()">📲 Enviar pedido por WhatsApp</button>
+    <button class="btn-whatsapp" onclick="enviarPedido()">Continuar por WhatsApp&nbsp; →</button>
+    <p class="carrito-ayuda">Confirmaremos disponibilidad y entrega contigo por chat.</p>
     <button class="vaciar" onclick="vaciarCarrito()">Vaciar pedido</button>
   </div>
 </aside>
+<div id="fondo-detalle" onclick="cerrarDetalle()"></div>
+<section id="detalle-producto" role="dialog" aria-modal="true" aria-labelledby="detalle-nombre" aria-hidden="true">
+  <button class="detalle-cerrar" onclick="cerrarDetalle()" aria-label="Cerrar detalles">✕</button>
+  <div id="detalle-contenido"></div>
+</section>
 <div id="toast" role="status"></div>
 
 <script>
 /* =========================================
    CONFIGURACIÓN
    Columnas del Google Sheet:
-   Nombre | Precio | Imagen | Categoria | Tallas | Stock | Etiqueta
-   (solo Nombre y Precio son obligatorias)
+   Nombre | Precio | Imagen | Categoria | Tallas | Stock | Etiqueta | Descripcion | Imagen2 | Imagen3 | Imagen4
+   Las imágenes extra también pueden ir juntas en Fotos separadas por |
    Tallas separadas con /  → S/M/L     Etiqueta: Nuevo u Oferta
 ========================================= */
 const NOMBRE_TIENDA = "Mi Tienda";
@@ -238,15 +280,14 @@ function mostrarCatalogo() {
       return `
       <article class="tarjeta ${agotado ? "agotado" : ""}">
         <div class="foto">
-          <img loading="lazy" src="${esc(p.Imagen || FOTO_VACIA)}" alt="${esc(p.Nombre)}" onerror="this.onerror=null;this.src=FOTO_VACIA">
+          <button class="foto-abrir" data-detail="${i}" aria-label="Ver fotos y detalles de ${esc(p.Nombre)}" style="position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:transparent;z-index:0"><img loading="lazy" src="${esc(p.Imagen || FOTO_VACIA)}" alt="${esc(p.Nombre)}" onerror="this.onerror=null;this.src=FOTO_VACIA"></button>
           ${agotado ? '<span class="tag">Agotado</span>' : etiqueta ? `<span class="tag ${norm(etiqueta) === "oferta" ? "oferta" : ""}">${esc(etiqueta)}</span>` : ""}
         </div>
         <div class="info">
           <h3>${esc(p.Nombre)}</h3>
           <div class="precio">${dinero(num(p.Precio))}</div>
           ${stock !== null && stock > 0 && stock <= 3 ? `<div class="aviso">Quedan solo ${stock}</div>` : ""}
-          ${tallas.length ? `<div class="tallas" role="group" aria-label="Talla">${tallas.map(t => `<button class="talla ${seleccion[i] === t ? "sel" : ""}" data-i="${i}" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>` : ""}
-          <button class="btn-agregar" data-add="${i}" ${agotado ? "disabled" : ""}>${agotado ? "Agotado" : "Agregar al pedido"}</button>
+          <button class="btn-agregar" data-detail="${i}" ${agotado ? "disabled" : ""}>${agotado ? "Agotado" : "Comprar"}</button>
         </div>
       </article>`;
     }).join("");
@@ -259,27 +300,72 @@ $("chips").addEventListener("click", e => {
   categoria = b.dataset.cat; dibujarChips(); mostrarCatalogo();
 });
 $("grid").addEventListener("click", e => {
-  const t = e.target.closest(".talla");
-  if (t) {
-    seleccion[t.dataset.i] = t.dataset.t;
-    t.parentElement.querySelectorAll(".talla").forEach(b => b.classList.toggle("sel", b === t));
+  const d = e.target.closest("[data-detail]");
+  if (d && !d.disabled) abrirDetalle(+d.dataset.detail);
+});
+
+let productoDetalle = -1, cantidadDetalle = 1;
+function imagenesDe(p) {
+  const extras = [p.Imagen2, p.Imagen3, p.Imagen4, ...(p.Fotos || "").split("|")]
+    .map(x => String(x || "").trim()).filter(Boolean);
+  return [...new Set([p.Imagen, ...extras].filter(Boolean))].slice(0, 8);
+}
+function abrirDetalle(i) {
+  const p = productos[i]; if (!p) return;
+  productoDetalle = i; cantidadDetalle = 1;
+  const tallas = (p.Tallas || "").split("/").map(t => t.trim()).filter(Boolean);
+  const stock = (p.Stock ?? "").trim() === "" ? null : num(p.Stock);
+  const agotado = stock !== null && stock <= 0;
+  const fotos = imagenesDe(p);
+  const descripcion = String(p.Descripcion || "Una prenda versátil y cómoda, pensada para acompañarte en cualquier ocasión.").trim();
+  $("detalle-contenido").innerHTML = `<div class="detalle-layout">
+    <div class="detalle-media"><img id="detalle-principal" class="detalle-principal" src="${esc(fotos[0] || FOTO_VACIA)}" alt="${esc(p.Nombre)}" onerror="this.onerror=null;this.src=FOTO_VACIA">
+      <div class="detalle-miniaturas" role="group" aria-label="Fotos del producto">${(fotos.length ? fotos : [FOTO_VACIA]).map((src, n) => `<button type="button" class="${n === 0 ? "activa" : ""}" data-photo="${esc(src)}" aria-label="Ver foto ${n + 1}"><img src="${esc(src)}" alt="Vista ${n + 1} de ${esc(p.Nombre)}" onerror="this.onerror=null;this.src=FOTO_VACIA"></button>`).join("")}</div>
+    </div>
+    <div class="detalle-info"><div class="detalle-categoria">${esc(p.Categoria || "Colección")}</div><h2 id="detalle-nombre">${esc(p.Nombre)}</h2><div class="detalle-precio">${dinero(num(p.Precio))}</div>
+      <p class="detalle-descripcion">${esc(descripcion)}</p>
+      ${tallas.length ? `<div class="detalle-etiqueta">Elige tu talla</div><div class="tallas" id="detalle-tallas" role="group" aria-label="Elige tu talla">${tallas.map(t => `<button type="button" class="talla ${seleccion[i] === t ? "sel" : ""}" data-size="${esc(t)}">${esc(t)}</button>`).join("")}</div>` : ""}
+      <label for="cantidad-detalle">Cantidad</label><div class="detalle-cantidad"><button type="button" data-qty="-1" aria-label="Restar cantidad">−</button><output id="cantidad-detalle">1</output><button type="button" data-qty="1" aria-label="Sumar cantidad">+</button></div>
+      ${stock !== null && stock > 0 ? `<div class="detalle-stock">${stock} ${stock === 1 ? "unidad disponible" : "unidades disponibles"}</div>` : ""}
+      <button type="button" id="detalle-agregar" class="detalle-agregar" ${agotado ? "disabled" : ""}>${agotado ? "Agotado" : "Agregar al pedido · " + dinero(num(p.Precio))}</button><p class="detalle-envio">El pedido se confirma directamente contigo por WhatsApp.</p>
+    </div></div>`;
+  $("fondo-detalle").classList.add("abierto"); $("detalle-producto").classList.add("abierto"); $("detalle-producto").setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+function cerrarDetalle() {
+  $("fondo-detalle").classList.remove("abierto"); $("detalle-producto").classList.remove("abierto"); $("detalle-producto").setAttribute("aria-hidden", "true");
+  document.body.style.overflow = ""; productoDetalle = -1;
+}
+$("detalle-producto").addEventListener("click", e => {
+  const thumb = e.target.closest("[data-photo]");
+  if (thumb) { $("detalle-principal").src = thumb.dataset.photo; $("detalle-producto").querySelectorAll("[data-photo]").forEach(b => b.classList.toggle("activa", b === thumb)); return; }
+  const size = e.target.closest("[data-size]");
+  if (size) { seleccion[productoDetalle] = size.dataset.size; $("detalle-producto").querySelectorAll("[data-size]").forEach(b => b.classList.toggle("sel", b === size)); return; }
+  const qty = e.target.closest("[data-qty]");
+  if (qty) {
+    const p = productos[productoDetalle], stock = (p.Stock ?? "").trim() === "" ? Infinity : Math.max(0, num(p.Stock));
+    cantidadDetalle = Math.max(1, Math.min(stock, cantidadDetalle + Number(qty.dataset.qty)));
+    $("cantidad-detalle").textContent = cantidadDetalle;
+    $("detalle-agregar").textContent = `Agregar al pedido · ${dinero(num(p.Precio) * cantidadDetalle)}`;
     return;
   }
-  const a = e.target.closest("[data-add]");
-  if (a) agregarAlCarrito(+a.dataset.add);
+  if (e.target.closest("#detalle-agregar")) {
+    const p = productos[productoDetalle], tallas = (p.Tallas || "").split("/").map(t => t.trim()).filter(Boolean);
+    if (tallas.length && !seleccion[productoDetalle]) { aviso("Elige una talla para " + p.Nombre); return; }
+    agregarAlCarrito(productoDetalle, seleccion[productoDetalle] || "", cantidadDetalle);
+    cerrarDetalle(); toggleCarrito(true);
+  }
 });
 
 /* 3. Carrito */
-function agregarAlCarrito(i) {
+function agregarAlCarrito(i, tallaElegida, cantidad = 1) {
   const p = productos[i];
-  const tallas = (p.Tallas || "").split("/").map(t => t.trim()).filter(Boolean);
-  if (tallas.length && !seleccion[i]) { aviso("Elige una talla para " + p.Nombre); return; }
-  const talla = seleccion[i] || "";
+  const talla = tallaElegida ?? seleccion[i] ?? "";
   const existente = carrito.find(c => c.nombre === p.Nombre && c.talla === talla);
-  if (existente) existente.cant++;
-  else carrito.push({nombre: p.Nombre, precio: num(p.Precio), talla, img: p.Imagen || "", cant: 1});
+  if (existente) existente.cant += cantidad;
+  else carrito.push({nombre: p.Nombre, precio: num(p.Precio), talla, img: p.Imagen || "", cant: cantidad});
   actualizarCarrito();
-  aviso("Agregado al pedido ✓");
+  aviso(cantidad > 1 ? `${cantidad} unidades agregadas al pedido ✓` : "Agregado al pedido ✓");
 }
 
 function cambiarCantidad(i, d) {
@@ -315,7 +401,7 @@ function toggleCarrito(abrir) {
   $("menu-carrito").classList.toggle("abierto", abierto);
   $("fondo").classList.toggle("abierto", abierto);
 }
-document.addEventListener("keydown", e => { if (e.key === "Escape") toggleCarrito(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { cerrarDetalle(); toggleCarrito(false); } });
 
 let tTimer;
 function aviso(txt) {
